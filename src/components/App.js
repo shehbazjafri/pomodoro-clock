@@ -1,164 +1,143 @@
-import React, { useState } from "react";
-import Counter from "./Counter";
-import Session from "./Session";
+import React, { useState, useEffect } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
-	faArrowAltCircleUp,
-	faArrowAltCircleDown
+  faArrowAltCircleUp,
+  faArrowAltCircleDown
 } from "@fortawesome/free-solid-svg-icons";
 import { secondsToTime } from "../helpers";
 import "../css/App.css";
+import sound from "../audio/beep1.mp3";
 
 library.add(faArrowAltCircleUp);
 library.add(faArrowAltCircleDown);
 
 function App() {
-	const [timerLabel, setTimerLabel] = useState("Session");
-	const [breakValue, setBreakValue] = useState(5);
-	const [sessionValue, setSessionValue] = useState(25);
-	const [isTimerRunning, setIsTimerRunning] = useState(false);
-	const [minutes, setMinutes] = useState(25);
-	const [seconds, setSeconds] = useState("00");
-	const [countDownInterval, setCountDownInterval] = useState(0);
-	let secondsRemaining = 1500;
-	let intervalId;
-	// let timerLabel = "Session";
+  const [breakLength, setBreakLength] = useState(5);
+  const [sessionLength, setSessionLength] = useState(25);
+  const [currentTimerLabel, setCurrentTimerLabel] = useState("Session");
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [seconds, setSeconds] = useState(25 * 60);
 
-	const breakLength = {
-		labelId: "break-label",
-		description: "Break Length",
-		countId: "break-length",
-		incId: "break-increment",
-		decId: "break-decrement"
-	};
-	const sessionLength = {
-		labelId: "session-label",
-		description: "Session Length",
-		countId: "session-length",
-		incId: "session-increment",
-		decId: "session-decrement"
-	};
+  const playAudio = () => {
+    document.getElementById("beep").play();
+  };
 
-	const session = {
-		labelId: "timer-label",
-		timerId: "time-left"
-	};
+  const stopAudio = () => {
+    const audio = document.getElementById("beep");
+    audio.currentTime = 0;
+    audio.pause();
+  };
 
-	function handleTimer() {
-		if (!isTimerRunning) {
-			if (minutes !== "00" && seconds !== "00")
-				secondsRemaining = minutes * 60 + seconds;
-			else if (minutes !== "00") secondsRemaining = minutes * 60;
-			else secondsRemaining = seconds;
-			intervalId = setInterval(countDown, 1000);
-			setCountDownInterval(intervalId);
-			setIsTimerRunning(true);
-		} else {
-			//stop time
-			clearInterval(countDownInterval);
-			setCountDownInterval(0);
-			setIsTimerRunning(false);
-		}
-	}
+  const resetTimer = () => {
+    setBreakLength(5);
+    setSessionLength(25);
+    setCurrentTimerLabel("Session");
+    setSeconds(25 * 60);
+    setIsTimerRunning(false);
+    stopAudio();
+  };
 
-	function switchTimer() {
-		if (!isTimerRunning) {
-			intervalId = setInterval(countDown, 1000);
-			setCountDownInterval(intervalId);
-			setIsTimerRunning(true);
-		} else {
-			clearInterval(countDownInterval);
-			setCountDownInterval(0);
-			setIsTimerRunning(false);
-		}
-	}
+  const setSecondsWhenStopped = (currentLength, label) => {
+    if (!isTimerRunning) {
+      if (label === currentTimerLabel) {
+        setSeconds(currentLength * 60);
+      }
+    }
+  };
 
-	function countDown() {
-		const time = secondsToTime(secondsRemaining);
-		setMinutes(time.minutes);
-		setSeconds(time.seconds);
-		if (
-			(time.minutes === 0 && time.seconds === 0) ||
-			(time.minutes === "00" && time.seconds === "00")
-		) {
-			// setTimeout(reachedZero, 1000);
-			console.log("changing timer as " + time.minutes + ":" + time.seconds);
+  const decrement = (currentLength, setLength, label) => {
+    if (currentLength > 1) {
+      setLength(currentLength - 1);
+      setSecondsWhenStopped(currentLength - 1, label);
+    }
+  };
 
-			clearInterval(countDownInterval);
-			setCountDownInterval(0);
-			setIsTimerRunning(false);
-			handleTimerChange();
-		}
-		secondsRemaining--;
-	}
+  const increment = (currentLength, setLength, label) => {
+    if (currentLength < 60) {
+      setLength(currentLength + 1);
+      setSecondsWhenStopped(currentLength + 1, label);
+    }
+  };
 
-	function handleTimerChange() {
-		console.log("TIMER LABEL =" + timerLabel);
+  const toggleTimer = () => {
+    setIsTimerRunning(!isTimerRunning);
+  };
 
-		if (timerLabel === "Session") {
-			console.log("CURRENT IS SESSION");
-			secondsRemaining = breakValue * 60;
-			const time = secondsToTime(secondsRemaining);
-			setMinutes(time.minutes);
-			setSeconds(time.seconds);
-			setTimerLabel("Break"); //NOT WORKING
-			switchTimer();
-		} else {
-			secondsRemaining = sessionValue * 60;
-			const time = secondsToTime(secondsRemaining);
-			setMinutes(time.minutes);
-			setSeconds(time.seconds);
-			setTimerLabel("Session");
-			switchTimer();
-		}
-	}
+  const switchTimer = () => {
+    setSeconds(
+      currentTimerLabel === "Session" ? breakLength * 60 : sessionLength * 60
+    );
+    setCurrentTimerLabel(currentTimerLabel === "Session" ? "Break" : "Session");
+  };
 
-	function handleReset() {
-		clearInterval(countDownInterval);
-		setMinutes(25);
-		setSeconds("00");
-		setBreakValue(5);
-	}
+  useEffect(() => {
+    let interval = null;
+    if (isTimerRunning) {
+      if (seconds === 0) {
+        playAudio();
+        switchTimer();
+      }
+      interval = setInterval(() => {
+        setSeconds(seconds => seconds - 1);
+      }, 1000);
+    } else if (!isTimerRunning && seconds !== 0) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isTimerRunning, seconds]);
 
-	return (
-		<div className="app-container">
-			<h2 className="app-title">Pomodoro Clock</h2>
-			<Counter
-				details={{ ...breakLength }}
-				timerLabel={timerLabel}
-				breakValue={breakValue}
-				setBreakValue={setBreakValue}
-				minutes={minutes}
-				setMinutes={setMinutes}
-				seconds={seconds}
-				setSeconds={setSeconds}
-				isTimerRunning={isTimerRunning}
-			/>
-			<Counter
-				details={{ ...sessionLength }}
-				timerLabel={timerLabel}
-				sessionValue={sessionValue}
-				setSessionValue={setSessionValue}
-				minutes={minutes}
-				setMinutes={setMinutes}
-				seconds={seconds}
-				setSeconds={setSeconds}
-				isTimerRunning={isTimerRunning}
-			/>
-			<Session
-				details={{ ...session }}
-				timerLabel={timerLabel}
-				minutes={minutes}
-				seconds={seconds}
-			/>
-			<button id="start_stop" onClick={handleTimer}>
-				{!isTimerRunning ? "Start" : "Stop"}
-			</button>
-			<button id="reset" onClick={handleReset}>
-				Reset
-			</button>
-		</div>
-	);
+  const currentTime = secondsToTime(seconds);
+  return (
+    <div className="app-container">
+      <div className="break-container">
+        <label id="break-label">Break Length</label>
+        <div id="break-length">{breakLength}</div>
+        <button
+          id="break-decrement"
+          onClick={() => decrement(breakLength, setBreakLength, "Break")}
+        >
+          Decrement
+        </button>
+        <button
+          id="break-increment"
+          onClick={() => increment(breakLength, setBreakLength, "Break")}
+        >
+          Increment
+        </button>
+      </div>
+
+      <div className="session-container">
+        <label id="session-label">Session Length</label>
+        <div id="session-length">{sessionLength}</div>
+        <button
+          id="session-decrement"
+          onClick={() => decrement(sessionLength, setSessionLength, "Session")}
+        >
+          Decrement
+        </button>
+        <button
+          id="session-increment"
+          onClick={() => increment(sessionLength, setSessionLength, "Session")}
+        >
+          Increment
+        </button>
+      </div>
+
+      <div className="timer-container">
+        <label id="timer-label">{currentTimerLabel}</label>
+        <div id="time-left">
+          {currentTime.minutes + ":" + currentTime.seconds}
+        </div>
+        <button id="start_stop" onClick={toggleTimer}>
+          {isTimerRunning ? "Pause" : "Start"}
+        </button>
+        <button id="reset" onClick={resetTimer}>
+          Reset
+        </button>
+        <audio id="beep" src={sound} />
+      </div>
+    </div>
+  );
 }
 
 export default App;
