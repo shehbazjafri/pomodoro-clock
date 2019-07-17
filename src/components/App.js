@@ -15,27 +15,30 @@ function App() {
   const [sessionLength, setSessionLength] = useState(25);
   const [currentTimerLabel, setCurrentTimerLabel] = useState("Session");
   const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [currentTimer, setCurrentTimer] = useState(0);
+  const [currentTimer, setCurrentTimer] = useState(secondsToTime(25 * 60));
 
   const resetTimer = () => {
     setBreakLength(5);
     setSessionLength(25);
-    setCurrentTimer(secondsToTime(0));
+    setCurrentTimerLabel("Session");
+    setCurrentTimer(secondsToTime(25 * 60));
+    setIsTimerRunning(false);
   };
 
   const decrement = (currentLength, setLength) => {
-    if (currentLength > 1) setLength(currentLength - 1);
+    if (currentLength > 1) {
+      setLength(currentLength - 1);
+    }
   };
 
   const increment = (currentLength, setLength) => {
-    if (currentLength < 60) setLength(currentLength + 1);
+    if (currentLength < 60) {
+      setLength(currentLength + 1);
+    }
   };
 
-  const handleTimer = () => {
-    if (isTimerRunning) {
-    } else {
-      setCurrentTimer(secondsToTime(25 * 60));
-    }
+  const toggleTimer = () => {
+    setIsTimerRunning(!setIsTimerRunning);
   };
 
   return (
@@ -77,10 +80,10 @@ function App() {
       <div className="timer-container">
         <label id="timer-label">{currentTimerLabel}</label>
         <div id="time-left">
-          {currentTimer.minutes}:{currentTimer.seconds}
+          {currentTimer.minutes + ":" + currentTimer.seconds}
         </div>
-        <button id="start_stop" onClick={handleTimer}>
-          {isTimerRunning ? "Stop" : "Start"}
+        <button id="start_stop" onClick={toggleTimer}>
+          {isTimerRunning ? "Pause" : "Start"}
         </button>
         <button id="reset" onClick={resetTimer}>
           Reset
