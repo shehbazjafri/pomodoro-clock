@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faArrowAltCircleUp,
@@ -15,13 +15,13 @@ function App() {
   const [sessionLength, setSessionLength] = useState(25);
   const [currentTimerLabel, setCurrentTimerLabel] = useState("Session");
   const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [currentTimer, setCurrentTimer] = useState(secondsToTime(25 * 60));
+  const [seconds, setSeconds] = useState(25 * 60);
 
   const resetTimer = () => {
     setBreakLength(5);
     setSessionLength(25);
     setCurrentTimerLabel("Session");
-    setCurrentTimer(secondsToTime(25 * 60));
+    setSeconds(25 * 60);
     setIsTimerRunning(false);
   };
 
@@ -38,9 +38,22 @@ function App() {
   };
 
   const toggleTimer = () => {
-    setIsTimerRunning(!setIsTimerRunning);
+    setIsTimerRunning(!isTimerRunning);
   };
 
+  useEffect(() => {
+    let interval = null;
+    if (isTimerRunning) {
+      interval = setInterval(() => {
+        setSeconds(seconds => seconds - 1);
+      }, 1000);
+    } else if (!isTimerRunning && seconds !== 0) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isTimerRunning, seconds]);
+
+  const currentTime = secondsToTime(seconds);
   return (
     <div className="app-container">
       <div className="break-container">
@@ -80,7 +93,7 @@ function App() {
       <div className="timer-container">
         <label id="timer-label">{currentTimerLabel}</label>
         <div id="time-left">
-          {currentTimer.minutes + ":" + currentTimer.seconds}
+          {currentTime.minutes + ":" + currentTime.seconds}
         </div>
         <button id="start_stop" onClick={toggleTimer}>
           {isTimerRunning ? "Pause" : "Start"}
