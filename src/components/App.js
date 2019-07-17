@@ -6,6 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { secondsToTime } from "../helpers";
 import "../css/App.css";
+import sound from "../audio/beep1.mp3";
 
 library.add(faArrowAltCircleUp);
 library.add(faArrowAltCircleDown);
@@ -23,17 +24,28 @@ function App() {
     setCurrentTimerLabel("Session");
     setSeconds(25 * 60);
     setIsTimerRunning(false);
+    stopAudio();
   };
 
-  const decrement = (currentLength, setLength) => {
+  const decrement = (currentLength, setLength, label) => {
     if (currentLength > 1) {
       setLength(currentLength - 1);
+      setSecondsWhenStopped(currentLength - 1, label);
     }
   };
 
-  const increment = (currentLength, setLength) => {
+  const increment = (currentLength, setLength, label) => {
     if (currentLength < 60) {
       setLength(currentLength + 1);
+      setSecondsWhenStopped(currentLength + 1, label);
+    }
+  };
+
+  const setSecondsWhenStopped = (currentLength, label) => {
+    if (!isTimerRunning) {
+      if (label === currentTimerLabel) {
+        setSeconds(currentLength * 60);
+      }
     }
   };
 
@@ -41,9 +53,30 @@ function App() {
     setIsTimerRunning(!isTimerRunning);
   };
 
+  const switchTimer = () => {
+    setSeconds(
+      currentTimerLabel === "Session" ? breakLength * 60 : sessionLength * 60
+    );
+    setCurrentTimerLabel(currentTimerLabel === "Session" ? "Break" : "Session");
+  };
+
+  const playAudio = () => {
+    document.getElementById("beep").play();
+  };
+
+  const stopAudio = () => {
+    const audio = document.getElementById("beep");
+    audio.currentTime = 0;
+    audio.pause();
+  };
+
   useEffect(() => {
     let interval = null;
     if (isTimerRunning) {
+      if (seconds === 0) {
+        playAudio();
+        switchTimer();
+      }
       interval = setInterval(() => {
         setSeconds(seconds => seconds - 1);
       }, 1000);
@@ -61,13 +94,13 @@ function App() {
         <div id="break-length">{breakLength}</div>
         <button
           id="break-decrement"
-          onClick={() => decrement(breakLength, setBreakLength)}
+          onClick={() => decrement(breakLength, setBreakLength, "Break")}
         >
           Decrement
         </button>
         <button
           id="break-increment"
-          onClick={() => increment(breakLength, setBreakLength)}
+          onClick={() => increment(breakLength, setBreakLength, "Break")}
         >
           Increment
         </button>
@@ -78,13 +111,13 @@ function App() {
         <div id="session-length">{sessionLength}</div>
         <button
           id="session-decrement"
-          onClick={() => decrement(sessionLength, setSessionLength)}
+          onClick={() => decrement(sessionLength, setSessionLength, "Session")}
         >
           Decrement
         </button>
         <button
           id="session-increment"
-          onClick={() => increment(sessionLength, setSessionLength)}
+          onClick={() => increment(sessionLength, setSessionLength, "Session")}
         >
           Increment
         </button>
@@ -101,6 +134,7 @@ function App() {
         <button id="reset" onClick={resetTimer}>
           Reset
         </button>
+        <audio id="beep" src={sound} />
       </div>
     </div>
   );
