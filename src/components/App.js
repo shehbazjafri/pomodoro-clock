@@ -18,6 +18,16 @@ function App() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [seconds, setSeconds] = useState(25 * 60);
 
+  const playAudio = () => {
+    document.getElementById("beep").play();
+  };
+
+  const stopAudio = () => {
+    const audio = document.getElementById("beep");
+    audio.currentTime = 0;
+    audio.pause();
+  };
+
   const resetTimer = () => {
     setBreakLength(5);
     setSessionLength(25);
@@ -25,6 +35,14 @@ function App() {
     setSeconds(25 * 60);
     setIsTimerRunning(false);
     stopAudio();
+  };
+
+  const setSecondsWhenStopped = (currentLength, label) => {
+    if (!isTimerRunning) {
+      if (label === currentTimerLabel) {
+        setSeconds(currentLength * 60);
+      }
+    }
   };
 
   const decrement = (currentLength, setLength, label) => {
@@ -41,14 +59,6 @@ function App() {
     }
   };
 
-  const setSecondsWhenStopped = (currentLength, label) => {
-    if (!isTimerRunning) {
-      if (label === currentTimerLabel) {
-        setSeconds(currentLength * 60);
-      }
-    }
-  };
-
   const toggleTimer = () => {
     setIsTimerRunning(!isTimerRunning);
   };
@@ -58,16 +68,6 @@ function App() {
       currentTimerLabel === "Session" ? breakLength * 60 : sessionLength * 60
     );
     setCurrentTimerLabel(currentTimerLabel === "Session" ? "Break" : "Session");
-  };
-
-  const playAudio = () => {
-    document.getElementById("beep").play();
-  };
-
-  const stopAudio = () => {
-    const audio = document.getElementById("beep");
-    audio.currentTime = 0;
-    audio.pause();
   };
 
   useEffect(() => {
