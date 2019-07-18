@@ -89,49 +89,61 @@ function App() {
   const currentTime = secondsToTime(seconds);
   return (
     <div className="app-container">
-      <div className="break-container">
+      <div className="length-container">
         <label id="break-label">Break Length</label>
-        <div id="break-length">{breakLength}</div>
+        <div className="length-value" id="break-length">
+          {breakLength}
+        </div>
         <button
+          className="length-button"
           id="break-decrement"
           onClick={() => decrement(breakLength, setBreakLength, "Break")}
         >
-          Decrement
+          -
         </button>
         <button
+          className="length-button"
           id="break-increment"
           onClick={() => increment(breakLength, setBreakLength, "Break")}
         >
-          Increment
+          +
         </button>
       </div>
 
-      <div className="session-container">
+      <div className="length-container">
         <label id="session-label">Session Length</label>
-        <div id="session-length">{sessionLength}</div>
+        <div className="length-value" id="session-length">
+          {sessionLength}
+        </div>
         <button
+          className="length-button"
           id="session-decrement"
           onClick={() => decrement(sessionLength, setSessionLength, "Session")}
         >
-          Decrement
+          -
         </button>
         <button
+          className="length-button"
           id="session-increment"
           onClick={() => increment(sessionLength, setSessionLength, "Session")}
         >
-          Increment
+          +
         </button>
       </div>
 
       <div className="timer-container">
         <label id="timer-label">{currentTimerLabel}</label>
-        <div id="time-left">
+        <div className="timer-value" id="time-left">
           {currentTime.minutes + ":" + currentTime.seconds}
         </div>
-        <button id="start_stop" onClick={toggleTimer}>
+        <button
+          className={isTimerRunning ? "button-pause" : "button-start"}
+          id="start_stop"
+          onClick={toggleTimer}
+        >
           {isTimerRunning ? "Pause" : "Start"}
         </button>
-        <button id="reset" onClick={resetTimer}>
+        <button className="button-reset" id="reset" onClick={resetTimer}>
           Reset
         </button>
         <audio id="beep" src={sound} />
