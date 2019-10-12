@@ -89,8 +89,12 @@ function App() {
   const currentTime = secondsToTime(seconds);
   return (
     <div className="app-container">
-      <div className="length-container">
-        <label id="break-label">Break Length</label>
+      <header className="title">
+        <span>Pomodoro Clock</span>
+      </header>
+
+      <div className="break container">
+        <label id="break-label">Break</label>
         <div className="length-value" id="break-length">
           {breakLength}
         </div>
@@ -110,8 +114,8 @@ function App() {
         </button>
       </div>
 
-      <div className="length-container">
-        <label id="session-label">Session Length</label>
+      <div className="session container">
+        <label id="session-label">Session</label>
         <div className="length-value" id="session-length">
           {sessionLength}
         </div>
@@ -131,7 +135,7 @@ function App() {
         </button>
       </div>
 
-      <div className="timer-container">
+      <div className="timer container">
         <label id="timer-label">{currentTimerLabel}</label>
         <div className="timer-value" id="time-left">
           {currentTime.minutes + ":" + currentTime.seconds}
