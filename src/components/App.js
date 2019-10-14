@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-  faArrowAltCircleUp,
-  faArrowAltCircleDown
-} from "@fortawesome/free-solid-svg-icons";
 import { secondsToTime } from "../helpers";
 import "../css/App.css";
 import sound from "../audio/beep1.mp3";
-
-library.add(faArrowAltCircleUp);
-library.add(faArrowAltCircleDown);
+import playIcon from "../assets/play.svg";
+import pauseIcon from "../assets/pause.svg";
+import resetIcon from "../assets/reset.svg";
+import plusIcon from "../assets/plus.svg";
+import minusIcon from "../assets/minus.svg";
 
 function App() {
   const [breakLength, setBreakLength] = useState(5);
@@ -89,8 +86,12 @@ function App() {
   const currentTime = secondsToTime(seconds);
   return (
     <div className="app-container">
-      <div className="length-container">
-        <label id="break-label">Break Length</label>
+      <header className="title">
+        <span>Pomodoro Clock</span>
+      </header>
+
+      <div className="break container">
+        <label id="break-label">Break</label>
         <div className="length-value" id="break-length">
           {breakLength}
         </div>
@@ -99,19 +100,19 @@ function App() {
           id="break-decrement"
           onClick={() => decrement(breakLength, setBreakLength, "Break")}
         >
-          -
+          <img src={minusIcon} alt="decrement-button" height="20" width="15" />
         </button>
         <button
           className="length-button"
           id="break-increment"
           onClick={() => increment(breakLength, setBreakLength, "Break")}
         >
-          +
+          <img src={plusIcon} alt="increment-button" height="20" width="15" />
         </button>
       </div>
 
-      <div className="length-container">
-        <label id="session-label">Session Length</label>
+      <div className="session container">
+        <label id="session-label">Session</label>
         <div className="length-value" id="session-length">
           {sessionLength}
         </div>
@@ -120,31 +121,32 @@ function App() {
           id="session-decrement"
           onClick={() => decrement(sessionLength, setSessionLength, "Session")}
         >
-          -
+          <img src={minusIcon} alt="decrement-button" height="20" width="15" />
         </button>
         <button
           className="length-button"
           id="session-increment"
           onClick={() => increment(sessionLength, setSessionLength, "Session")}
         >
-          +
+          <img src={plusIcon} alt="increment-button" height="20" width="15" />
         </button>
       </div>
 
-      <div className="timer-container">
+      <div className="timer container">
         <label id="timer-label">{currentTimerLabel}</label>
         <div className="timer-value" id="time-left">
           {currentTime.minutes + ":" + currentTime.seconds}
         </div>
-        <button
-          className={isTimerRunning ? "button-pause" : "button-start"}
-          id="start_stop"
-          onClick={toggleTimer}
-        >
-          {isTimerRunning ? "Pause" : "Start"}
+        <button id="start_stop" class="timer-button" onClick={toggleTimer}>
+          <img
+            src={isTimerRunning ? pauseIcon : playIcon}
+            alt="play-button"
+            height="35"
+            width="25"
+          />
         </button>
-        <button className="button-reset" id="reset" onClick={resetTimer}>
-          Reset
+        <button id="reset" class="timer-button" onClick={resetTimer}>
+          <img src={resetIcon} alt="reset-button" height="35" width="25" />
         </button>
         <audio id="beep" src={sound} />
       </div>

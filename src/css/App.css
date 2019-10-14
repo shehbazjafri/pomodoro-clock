@@ -1,120 +1,84 @@
-@import url("https://fonts.googleapis.com/css?family=Orbitron");
-
 .app-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 30px;
-  padding: 70px 0;
+  grid-template-areas: "title title" "break session" "timer timer";
+  grid-column-gap: 15%;
+  grid-row-gap: 30px;
+  width: 40vw;
+  height: 80vh;
+  padding: 0;
   text-align: center;
-  margin: 10%;
+  margin: auto;
+  align-items: center;
+  justify-items: center;
 }
 
-.length-container {
-  padding: 5px;
-  background-color: #f1f1f1;
-  border-radius: 90px;
-  width: 500px;
+@media (max-width: 769px) {
+  .app-container {
+    width: 90vw;
+    grid-template-areas: "title" "break" "session" "timer";
+  }
+}
+
+.container {
+  background-color: #110f27;
+  border: 5px solid white;
+  border-radius: 4px;
+  font-weight: bold;
+  padding: 10px;
+  width: 100%;
+}
+.title {
+  grid-area: title;
+  font-weight: bold;
+  font-size: 48px;
+  text-align: center;
+}
+
+.break {
+  grid-area: break;
+}
+
+.session {
+  grid-area: session;
+}
+
+.timer {
+  grid-area: timer;
 }
 
 label {
-  font-family: Orbitron;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 48px;
+  font-weight: bold;
+  font-size: 36px;
   line-height: 48px;
-  color: #000000;
-}
-
-.length-value {
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 64px;
-  line-height: 75px;
-
-  color: #000000;
+  color: white;
 }
 
 .length-button {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 38px;
-  line-height: 48px;
-  height: 60px;
-  width: 150px;
+  color: #110f27;
+  font-weight: bold;
+  font-size: 16px;
+  background: white;
+  border: 5px solid white;
   margin: 5px;
-  background: #f7eb4e;
-  border: 1px solid #000000;
-  box-sizing: border-box;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 90px;
 }
 
-.timer-container {
-  grid-column: 1/-1;
-  background: #f1f1f1;
-  border-radius: 90px;
-  height: 300px;
-}
-
-button {
-  font-family: Orbitron;
+.length-value {
+  color: #ff7878;
+  font-weight: bold;
+  font-size: 48px;
+  line-height: 75px;
 }
 
 .timer-value {
-  background: #10110c;
-  opacity: 0.8;
-  border-radius: 25px;
-  margin: 30px;
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 72px;
-  line-height: 84px;
-  color: #ff0000;
+  color: #ff3e3e;
+  font-weight: bold;
+  font-size: 48px;
 }
 
-.button-start {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 38px;
-  line-height: 48px;
-  height: 80px;
-  width: 200px;
+.timer-button {
+  background: white;
+  color: #110f27;
+  border-radius: 5px;
   margin: 5px;
-  background: #4bbd2e;
-  border: 1px solid #000000;
-  box-sizing: border-box;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 90px;
-}
-
-.button-pause {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 38px;
-  line-height: 48px;
-  height: 80px;
-  width: 200px;
-  margin: 5px;
-  background: #ffa136;
-  border: 1px solid #000000;
-  box-sizing: border-box;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 90px;
-}
-
-.button-reset {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 38px;
-  line-height: 48px;
-  height: 80px;
-  width: 200px;
-  margin: 5px;
-  background: #bd482e;
-  border: 1px solid #000000;
-  box-sizing: border-box;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 90px;
+  border: 0;
 }
