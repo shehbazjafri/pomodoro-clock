@@ -75,13 +75,10 @@ label {
   font-size: 48px;
 }
 
-.button-start,
-.button-pause,
-.button-reset {
-  color: #110f27;
-  font-weight: bold;
-  font-size: 16px;
+.timer-button {
   background: white;
-  border: 5px solid white;
+  color: #110f27;
+  border-radius: 5px;
   margin: 5px;
+  border: 0;
 }
