@@ -40,7 +40,7 @@ self.__precacheManifest = [
     "url": "/pomodoro-clock/static/media/reset.72b9d63f.svg"
   },
   {
-    "revision": "1515784afb360112a2097b2305111804",
+    "revision": "101ba47a64963a087a69a390135db81d",
     "url": "/pomodoro-clock/index.html"
   }
 ];
